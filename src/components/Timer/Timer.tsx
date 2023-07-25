@@ -1,9 +1,9 @@
 import { memo } from 'react';
 import { Link } from 'react-router-dom';
-import { SMain } from '../assets/styles/timer.styles';
-import { SPageNav } from '../assets/styles/nav.styles';
-import Title from './Title';
-import DisplayTimer from './DisplayTimer';
+import { SMain } from '../../assets/styles/timer.styles';
+import { SPageNav } from '../../assets/styles/nav.styles';
+import Title from '../Title';
+import Display from './Display';
 
 const Timer: React.FC = memo(() => {
     return (
@@ -14,7 +14,7 @@ const Timer: React.FC = memo(() => {
             </SPageNav>
 
             <Title title='Timer' />
-            <DisplayTimer />
+            <Display />
         </SMain>
     );
 });

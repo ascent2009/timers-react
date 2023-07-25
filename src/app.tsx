@@ -2,8 +2,8 @@ import React from 'react';
 import { Routes, Route } from 'react-router-dom';
 import { SApp } from './assets/styles/app.styles';
 import Homepage from './components/Homepage';
-import Timer from './components/Timer';
-import Countdown from './components/Countdown';
+import Timer from './components/Timer/Timer';
+import Countdown from './components/Countdown/Countdown';
 
 function App() {
     return (

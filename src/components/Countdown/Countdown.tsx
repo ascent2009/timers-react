@@ -1,33 +1,32 @@
 import { Link } from 'react-router-dom';
 import { useState, useEffect, memo } from 'react';
-import { SMain } from '../assets/styles/timer.styles';
-import { SPageNav } from '../assets/styles/nav.styles';
-import Title from './Title';
-import { DisplayCountdown } from './Display';
-import InputCount from './InputCount';
+import { SMain } from '../../assets/styles/timer.styles';
+import { SPageNav } from '../../assets/styles/nav.styles';
+import Title from '../Title';
+import Display from './Display';
+import Input from './Input';
 import Button from './Button';
 import Progress from './Progress';
 import useSound from 'use-sound';
-import sound from '../assets/send.mp3';
-import { checkZeroValue } from '../utils/helpers';
+import sound from '../../assets/send.mp3';
+import { checkZeroValue } from '../../utils/helpers';
+import { countdownDefaultValues, CountdownContext } from '../../context';
 
 type Timer = NodeJS.Timeout | number | string | undefined;
 
 const Countdown: React.FC = memo(() => {
     const defaultFormValue = {
-        min: 0,
-        sec: 0,
+        minutes: 0,
+        seconds: 0,
     };
     const [inputValues, setInputValues] = useState(defaultFormValue);
-    const [sec, setSec] = useState(0);
-    const [min, setMin] = useState(0);
-    const [start, setStart] = useState(false);
-    const [startProgress, setStartProgress] = useState(0);
-    const [isProgress, setIsProgress] = useState(false);
-    const [isDisplay, setIsDisplay] = useState(false);
+    const [sec, setSec] = useState(countdownDefaultValues.sec);
+    const [min, setMin] = useState(countdownDefaultValues.sec);
+    const [start, setStart] = useState(countdownDefaultValues.start);
+    const [startProgress, setStartProgress] = useState(countdownDefaultValues.startProgress);
+    const [isProgress, setIsProgress] = useState(countdownDefaultValues.isProgress);
+    const [isDisplay, setIsDisplay] = useState(countdownDefaultValues.isDisplay);
     const [play] = useSound(sound);
-
-    // const checkZeroValue = [min, sec].some(u => u > 0);
 
     useEffect(() => {
         let timer: Timer;
@@ -49,13 +48,13 @@ const Countdown: React.FC = memo(() => {
     }, [min, sec, start, play]);
 
     useEffect(() => {
-        const { min, sec } = inputValues;
+        const { minutes, seconds } = inputValues;
         let interval: Timer;
         if (isProgress) {
             if (startProgress >= 100) {
                 return;
             }
-            let time = ((+min * 60 + +sec) * 1000) / 100;
+            let time = ((+minutes * 60 + +seconds) * 1000) / 100;
 
             interval = setTimeout(() => {
                 setStartProgress(prev => prev + 1);
@@ -77,8 +76,8 @@ const Countdown: React.FC = memo(() => {
         setIsDisplay(true);
         setIsProgress(!isProgress);
         if (!checkZeroValue([min, sec])) {
-            setMin(+inputValues.min);
-            setSec(+inputValues.sec);
+            setMin(+inputValues.minutes);
+            setSec(+inputValues.seconds);
         }
     };
 
@@ -100,34 +99,28 @@ const Countdown: React.FC = memo(() => {
             </SPageNav>
 
             <Title title='Countdown' />
-            <InputCount
-                onChange={handleInputChange}
-                start={start}
-                checkZeroValue={checkZeroValue([min, sec])}
-                inputValues={inputValues}
-                minutes={min}
-                seconds={sec}
-                isDisplay={isDisplay}
-            />
+            <CountdownContext.Provider
+                value={{
+                    inputValues,
+                    sec,
+                    min,
+                    start,
+                    startProgress,
+                    isProgress,
+                    isDisplay,
+                    startTimer,
+                    resetTimer,
+                    handleInputChange,
+                }}
+            >
+                <Input />
 
-            <DisplayCountdown min={min} sec={sec} isDisplay={isDisplay}>
-                <Progress
-                    startProgress={startProgress}
-                    checkZeroValue={checkZeroValue([min, sec])}
-                    isProgress={isProgress}
-                    min={min}
-                    sec={sec}
-                />
-            </DisplayCountdown>
+                <Display>
+                    <Progress />
+                </Display>
 
-            <Button
-                inputValues={inputValues}
-                start={start}
-                startTimer={startTimer}
-                resetTimer={resetTimer}
-                startProgress={startProgress}
-                checkZeroValue={checkZeroValue([min, sec])}
-            />
+                <Button />
+            </CountdownContext.Provider>
         </SMain>
     );
 });

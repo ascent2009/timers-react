@@ -1,12 +1,12 @@
 import { memo, useState, useEffect } from 'react';
-import { SContainer, SField } from '../assets/styles/display.styles';
-import ButtonTimer from './ButtonTimer';
-import { timerDefaultValues, TimerContext } from '../context';
+import { SContainer, SField } from '../../assets/styles/display.styles';
+import ButtonTimer from './Button';
+import { timerDefaultValues, TimerContext } from '../../context';
 
-const DisplayTimer1: React.FC = () => {
-    const [msec, setMsec] = useState(timerDefaultValues.min);
+const Display: React.FC = () => {
+    const [msec, setMsec] = useState(timerDefaultValues.msec);
     const [sec, setSec] = useState(timerDefaultValues.sec);
-    const [min, setMin] = useState(timerDefaultValues.msec);
+    const [min, setMin] = useState(timerDefaultValues.min);
     const [start, setStart] = useState(timerDefaultValues.start);
 
     const startTimer = () => {
@@ -57,4 +57,4 @@ const DisplayTimer1: React.FC = () => {
     );
 };
 
-export default memo(DisplayTimer1);
+export default memo(Display);

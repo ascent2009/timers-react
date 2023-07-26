@@ -19,7 +19,7 @@ const Button: React.FC = () => {
     return (
         <SButtonContainer>
             <SButton disabled={(+minutes || +seconds) && startProgress !== 100 ? false : true} onClick={startTimer}>
-                {!checkZeroValue || !start ? (
+                {!checkZeroValue([min, sec]) || !start ? (
                     <SButtonWrap>
                         <SImg src={PlaySvg} alt='play' /> запустить
                     </SButtonWrap>

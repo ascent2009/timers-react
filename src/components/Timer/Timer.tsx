@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { SMain } from '../../assets/styles/timer.styles';
 import { SPageNav } from '../../assets/styles/nav.styles';
 import Title from '../Title';
-import Display from './Display';
+import Container from './Container';
 
 const Timer: React.FC = memo(() => {
     return (
@@ -12,9 +12,8 @@ const Timer: React.FC = memo(() => {
                 <Link to='/'>На главную</Link>
                 <Link to='/countdown'>Countdown</Link>
             </SPageNav>
-
             <Title title='Timer' />
-            <Display />
+            <Container />
         </SMain>
     );
 });

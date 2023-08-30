@@ -1,24 +1,10 @@
 import { memo, useState, useEffect } from 'react';
 import { SContainer, SField } from '../../assets/styles/display.styles';
-import ButtonTimer from './Button';
-import { timerDefaultValues, TimerContext } from '../../context';
 
-const Display: React.FC = () => {
-    const [msec, setMsec] = useState(timerDefaultValues.msec);
-    const [sec, setSec] = useState(timerDefaultValues.sec);
-    const [min, setMin] = useState(timerDefaultValues.min);
-    const [start, setStart] = useState(timerDefaultValues.start);
-
-    const startTimer = () => {
-        setStart(!start);
-    };
-
-    const resetTimer = () => {
-        setStart(false);
-        setMsec(0);
-        setSec(0);
-        setMin(0);
-    };
+const Display: React.FC<{ start: boolean; timerRef: any }> = ({ start, timerRef }) => {
+    const [msec, setMsec] = useState(0);
+    const [sec, setSec] = useState(0);
+    const [min, setMin] = useState(0);
 
     useEffect(() => {
         let timer: NodeJS.Timeout | number | string | undefined;
@@ -35,25 +21,18 @@ const Display: React.FC = () => {
                 }
             }, 10);
         }
-        return () => clearInterval(timer);
-    }, [start, min, sec, msec]);
+        timerRef.current = timer;
+        return () => {
+            clearInterval(timer);
+        };
+    }, [start, min, sec, msec, timerRef]);
+
     return (
-        <TimerContext.Provider
-            value={{
-                min,
-                sec,
-                msec,
-                start,
-                startTimer,
-                resetTimer,
-            }}
-        >
-            <SContainer border='none' fontSize='120px' padding='80px' flexDirection='row' justifyContent='center'>
-                <SField>{min < 10 ? `0${min}` : min}</SField> :<SField>{sec < 10 ? `0${sec}` : sec}</SField> :
-                <SField>{msec < 10 ? `0${msec}` : msec}</SField>
-            </SContainer>
-            <ButtonTimer />
-        </TimerContext.Provider>
+        <SContainer border='none' fontSize='120px' padding='80px' flexDirection='row' justifyContent='center'>
+            <SField>{timerRef.current === 0 ? '00' : min < 10 ? `0${min}` : min}</SField> :
+            <SField>{timerRef.current === 0 ? '00' : sec < 10 ? `0${sec}` : sec}</SField> :
+            <SField>{timerRef.current === 0 ? '00' : msec < 10 ? `0${msec}` : msec}</SField>
+        </SContainer>
     );
 };
 

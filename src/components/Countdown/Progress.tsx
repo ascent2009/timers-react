@@ -1,15 +1,12 @@
-import React, { memo, useContext } from 'react';
+import React, { memo } from 'react';
 import { SProgress, SProgressPercentage, SProgressResult } from '../../assets/styles/progress.styles';
-import { checkZeroValue } from '../../utils/helpers';
-import { CountdownContext } from '../../context';
 
-const Progress: React.FC = () => {
-    const { startProgress, isProgress, min, sec } = useContext(CountdownContext);
+const Progress: React.FC<{ progressRef: any; startProgress: number }> = ({ progressRef, startProgress }) => {
     return startProgress !== 100 ? (
         <>
             <SProgress max={100} completed={startProgress} />
-            <SProgressPercentage>
-                {isProgress || checkZeroValue([min, sec]) ? `${startProgress}%` : null}
+            <SProgressPercentage ref={progressRef}>
+                {progressRef.current ? `${startProgress}%` : null}
             </SProgressPercentage>
         </>
     ) : (

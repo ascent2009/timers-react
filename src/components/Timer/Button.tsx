@@ -1,32 +1,25 @@
-import { memo, useContext } from 'react';
+import { memo } from 'react';
 import { SButtonContainer, SButton, SButtonWrap, SImg } from '../../assets/styles/timer.styles';
 import PlaySvg from '../../assets/icons/play.svg';
 import StopSvg from '../../assets/icons/stop.svg';
 import PauseSvg from '../../assets/icons/pause.svg';
-import { TimerContext } from '../../context';
-import { checkZeroValue } from '../../utils/helpers';
 
-const Button: React.FC = () => {
-    const { min, msec, sec, start, startTimer, resetTimer } = useContext(TimerContext);
+interface IButton {
+    startTimer: () => void;
+    resetTimer: () => void;
+    startRef: any;
+}
 
+const Button: React.FC<IButton> = ({ startTimer, resetTimer, startRef }) => {
     return (
         <SButtonContainer>
-            <SButton onClick={startTimer}>
-                {!checkZeroValue([min, sec, msec]) ? (
-                    <SButtonWrap>
-                        <SImg src={PlaySvg} alt='play' /> запустить
-                    </SButtonWrap>
-                ) : !start ? (
-                    <SButtonWrap>
-                        <SImg src={PlaySvg} alt='play' /> возобновить
-                    </SButtonWrap>
-                ) : (
-                    <SButtonWrap>
-                        <SImg src={PauseSvg} alt='play' /> пауза
-                    </SButtonWrap>
-                )}
+            <SButton onClick={startTimer} ref={startRef}>
+                <SButtonWrap>
+                    <SImg src={!startRef.current ? PlaySvg : PauseSvg} alt='play' />
+                    {!startRef.current ? 'запустить' : 'пауза'}
+                </SButtonWrap>
             </SButton>
-            <SButton disabled={checkZeroValue([min, sec, msec]) ? false : true} onClick={resetTimer}>
+            <SButton onClick={resetTimer} ref={startRef} disabled={!startRef.current ? true : false}>
                 <SButtonWrap>
                     <SImg src={StopSvg} alt='stop' /> сбросить
                 </SButtonWrap>

@@ -1,40 +1,43 @@
-import { memo, useState, useRef } from 'react';
+import { memo } from 'react';
 import Display from './Display';
 import Input from './Input';
 import Button from './Button';
-import { countdownDefaultValues, CountdownContext } from '../../context';
+import Progress from './Progress';
+import { useCountdown } from '../../hooks/useCountdown';
 
 const Container: React.FC = () => {
-    const [start, setStart] = useState(countdownDefaultValues.start);
-    const displayRef = useRef<any>();
-    const progressRef = useRef<any>();
-    const inputMinRef = useRef<number | any>(0);
-
-    const startTimer = () => {
-        setStart(!start);
-        displayRef.current = true;
-        progressRef.current = true;
-    };
-
-    const resetTimer = () => {
-        setStart(false);
-        progressRef.current = false;
-        displayRef.current = false;
-        inputMinRef.current = 0;
-    };
+    const {
+        inputMinutes,
+        inputSeconds,
+        sec,
+        min,
+        start,
+        startProgress,
+        isProgress,
+        isDisplay,
+        startTimer,
+        resetTimer,
+        handleInputMinutesChange,
+        handleInputSecondsChange,
+    } = useCountdown();
 
     return (
-        <CountdownContext.Provider
-            value={{
-                start,
-                startTimer,
-                resetTimer,
-            }}
-        >
-            <Input displayRef={displayRef} inputMinRef={inputMinRef} />
-            <Display displayRef={displayRef} progressRef={progressRef} inputMinRef={inputMinRef} />
-            <Button />
-        </CountdownContext.Provider>
+        <>
+            <Input
+                start={start}
+                isDisplay={isDisplay}
+                inputMinutes={inputMinutes}
+                inputSeconds={inputSeconds}
+                handleInputMinutesChange={handleInputMinutesChange}
+                handleInputSecondsChange={handleInputSecondsChange}
+                min={min}
+                sec={sec}
+            />
+            <Display isDisplay={isDisplay} min={min} sec={sec}>
+                <Progress startProgress={startProgress} isProgress={isProgress} min={min} sec={sec} />
+            </Display>
+            <Button start={start} startTimer={startTimer} resetTimer={resetTimer} />
+        </>
     );
 };
 

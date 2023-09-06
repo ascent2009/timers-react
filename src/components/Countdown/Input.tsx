@@ -5,24 +5,24 @@ import { checkZeroValue } from '../../utils/helpers';
 const Input: React.FC<{
     inputMinutes: number;
     inputSeconds: number;
-    isDisplay: boolean;
     handleInputMinutesChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
     handleInputSecondsChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
     start: boolean;
     min: number;
     sec: number;
+    displayRef: any;
 }> = ({
     inputMinutes,
     inputSeconds,
-    isDisplay,
     handleInputMinutesChange,
     handleInputSecondsChange,
     start,
     min,
     sec,
+    displayRef,
 }) => {
     return (
-        <SForm style={{ display: isDisplay ? 'none' : 'flex' }}>
+        <SForm style={{ display: displayRef.current ? 'none' : 'flex' }}>
             <SInputWrap>
                 <SLabel htmlFor='min'>Enter minutes:</SLabel>
                 <SInput

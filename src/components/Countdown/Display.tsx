@@ -3,15 +3,15 @@ import { SContainer, SField, SFieldContainer } from '../../assets/styles/display
 
 interface IDisplay {
     children?: React.ReactNode;
-    isDisplay: boolean;
     min: number;
     sec: number;
+    displayRef: any | boolean;
 }
 
-const Display: React.FC<IDisplay> = ({ children, isDisplay, min, sec }) => {
+const Display: React.FC<IDisplay> = ({ children, min, sec, displayRef }) => {
     return (
         <SContainer
-            style={{ display: isDisplay ? 'flex' : 'none' }}
+            style={{ display: displayRef.current ? 'flex' : 'none' }}
             border='5px solid lightgrey'
             fontSize='100px'
             padding='75px 80px'

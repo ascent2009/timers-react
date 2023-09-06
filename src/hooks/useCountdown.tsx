@@ -7,6 +7,9 @@ type Timer = NodeJS.Timeout | number | string | undefined;
 export const useCountdown = () => {
     const secRef = useRef<number>(0);
     const minRef = useRef<number>(0);
+    const timerRef = useRef<Timer>(0);
+    const displayRef = useRef<boolean>(false);
+    const intervalRef = useRef<Timer>(0);
     const [sec, setSec] = useState(0);
     const [min, setMin] = useState(0);
     const [inputMinutes, setInputMinutes] = useState(0);
@@ -14,18 +17,16 @@ export const useCountdown = () => {
     const [start, setStart] = useState(false);
     const [startProgress, setStartProgress] = useState(0);
     const [isProgress, setIsProgress] = useState(false);
-    const [isDisplay, setIsDisplay] = useState(false);
     const [play] = useSound(sound);
 
     useEffect(() => {
-        let timer: Timer;
-
         if (start) {
             if (!min && !sec) {
                 play();
                 return;
             }
-            timer = setTimeout(() => {
+
+            timerRef.current = setTimeout(() => {
                 setSec(prev => prev - 1);
                 if (!sec) {
                     setMin(min => (min >= 1 ? min - 1 : 0));
@@ -36,23 +37,22 @@ export const useCountdown = () => {
         secRef.current = sec;
         minRef.current = min;
 
-        return () => clearTimeout(timer);
-    }, [min, sec, start, play]);
+        return () => clearTimeout(timerRef.current);
+    }, [min, sec, play, start]);
 
     useEffect(() => {
-        let interval: Timer;
         if (isProgress) {
             if (startProgress >= 100) {
                 return;
             }
             let time = ((+inputMinutes * 60 + +inputSeconds) * 1000) / 100;
-
-            interval = setTimeout(() => {
+            intervalRef.current = setTimeout(() => {
                 setStartProgress(prev => prev + 1);
             }, time);
         }
-        return () => clearTimeout(interval);
-    }, [isProgress, inputMinutes, inputSeconds, startProgress]);
+
+        return () => clearTimeout(intervalRef.current);
+    }, [inputMinutes, inputSeconds, startProgress, isProgress]);
 
     const handleInputMinutesChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
         let value = +e.target.value;
@@ -68,7 +68,7 @@ export const useCountdown = () => {
 
     const startTimer = useCallback(() => {
         setStart(start => !start);
-        setIsDisplay(true);
+        displayRef.current = true;
         setIsProgress(isProgress => !isProgress);
         setMin(minRef.current);
         setSec(secRef.current);
@@ -77,7 +77,7 @@ export const useCountdown = () => {
     const resetTimer = useCallback(() => {
         setStart(false);
         setIsProgress(false);
-        setIsDisplay(false);
+        displayRef.current = false;
         setSec(0);
         setMin(0);
         secRef.current = 0;
@@ -93,12 +93,12 @@ export const useCountdown = () => {
         start,
         startProgress,
         isProgress,
-        isDisplay,
         inputMinutes,
         inputSeconds,
         handleInputMinutesChange,
         handleInputSecondsChange,
         startTimer,
         resetTimer,
+        displayRef,
     };
 };
